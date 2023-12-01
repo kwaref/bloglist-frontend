@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import authService from './services/auth'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -23,14 +24,18 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = accessData => {
-    authService.login(accessData)
-      .then(user => {
-        setUser(user)
-        window.localStorage.setItem(
-          'loggedBloglistAppUser', JSON.stringify(user)
-        )
-      })
+  const handleLogin = async accessData => {
+    const response = await authService.login(accessData)
+    setUser(response)
+    window.localStorage.setItem(
+      'loggedBloglistAppUser', JSON.stringify(user)
+    )
+  }
+
+  const handleCreate = async postData => {
+    const response = await blogService.create({ 'Authorization': `Bearer ${user.token}` }, postData)
+    const newBlogs = [...blogs, response]
+    setBlogs(newBlogs)
   }
 
   const handleLogout = () => {
@@ -42,6 +47,7 @@ const App = () => {
     <LoginForm handleLogin={handleLogin} />
     :
     <div>
+      <BlogForm handleCreate={handleCreate}/>
       <h2>blogs</h2>
       <p><span>{`${user.name} logged in`} <button onClick={handleLogout}>logout</button></span></p>
       {blogs.map(blog =>

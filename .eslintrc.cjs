@@ -43,5 +43,6 @@ module.exports = {
     ],
     'arrow-parens': ['error', 'as-needed'],
     'no-console': 0,
+    'react/display-name': 0,
   },
 }

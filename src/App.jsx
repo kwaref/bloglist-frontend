@@ -5,6 +5,7 @@ import authService from './services/auth'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import { Notification } from './components/Notification'
+import Togglable from './components/Togglable'
 
 
 const App = () => {
@@ -58,21 +59,26 @@ const App = () => {
     setUser(null)
   }
 
-  return user === null ?
-    <div>
-      <Notification message={notification.message} error={notification.error} />
-      <LoginForm handleLogin={handleLogin} />
-    </div>
-    :
-    <div>
-      <BlogForm handleCreate={handleCreate}/>
-      <h2>blogs</h2>
-      <Notification message={notification.message} error={notification.error} />
-      <p><span>{`${user.name} logged in`} <button onClick={handleLogout}>logout</button></span></p>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </div>
+  return <>
+    <Notification message={notification.message} error={notification.error} />
+    {
+      user === null ?
+        <div>
+          <LoginForm handleLogin={handleLogin} />
+        </div>
+        :
+        <div>
+          <h2>blogs</h2>
+          <p><span>{`${user.name} logged in`} <button onClick={handleLogout}>logout</button></span></p>
+          <Togglable buttonLabel='new blog'>
+            <BlogForm handleCreate={handleCreate}/>
+          </Togglable>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </div>
+    }
+  </>
 }
 
 export default App

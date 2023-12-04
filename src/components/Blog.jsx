@@ -19,7 +19,7 @@ const Blog = ({ blog }) => {
     <div style={{ display: open ? 'block' : 'none' }}>
       <p style={{ margin: '0px' }}>{blog.url}</p>
       <p style={{ margin: '0px' }}>likes {blog.likes || 0} <button>like</button></p>
-      <p style={{ margin: '0px' }}>{blog.author}</p>
+      <p style={{ margin: '0px' }}>{blog.user ? blog.user.name : 'anonymous'}</p>
     </div>
   </div>
 }

@@ -48,7 +48,7 @@ const App = () => {
   const handleCreate = async postData => {
     try {
       const response = await blogService.create(postData)
-      const newBlogs = [...blogs, response]
+      const newBlogs = [...blogs, { ...response, user }]
       setBlogs(newBlogs)
       blogFormRef.current.toggleVisibility()
       setNotification({ message: `a new blog ${response.title} by ${response.author} added`, error: false })

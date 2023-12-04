@@ -10,7 +10,7 @@ module.exports = {
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh', 'jest'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
@@ -43,6 +43,9 @@ module.exports = {
     ],
     'arrow-parens': ['error', 'as-needed'],
     'no-console': 0,
-    'react/display-name': 0,
+    'react/display-name': 2,
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 0,
+    'no-unused-vars': 0
   },
 }

@@ -59,6 +59,19 @@ const App = () => {
     }
   }
 
+  const handleLike = async data => {
+    try {
+      const blog = await blogService.update(data)
+      const newBlogs = blogs.map(item => {
+        return item.id !== blog.id ? item : blog
+      })
+      setBlogs(newBlogs)
+    } catch (error) {
+      setNotification({ message: error.response.data.error, error: true })
+      setTimeout(() => { setNotification({ message: null, error: false }) }, 3000)
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBloglistAppUser')
     setUser(null)
@@ -81,7 +94,7 @@ const App = () => {
           <p><span>{`${user.name} logged in`} <button onClick={handleLogout}>logout</button></span></p>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} like={ handleLike } />
           )}
         </div>
     }

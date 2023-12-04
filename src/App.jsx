@@ -7,7 +7,6 @@ import BlogForm from './components/BlogForm'
 import { Notification } from './components/Notification'
 import Togglable from './components/Togglable'
 
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
@@ -18,7 +17,7 @@ const App = () => {
   useEffect(() => {
     user &&
     blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort((a, b) => b.likes - a.likes))
+      setBlogs( [...blogs].sort((a, b) => b.likes - a.likes))
     )
   }, [user])
 
@@ -72,6 +71,17 @@ const App = () => {
     }
   }
 
+  const handleRemove = async id => {
+    try {
+      await blogService.remove(id)
+      const newBlogs = blogs.filter(item => item.id !== id)
+      setBlogs(newBlogs)
+    } catch (error) {
+      setNotification({ message: error.response.data.error, error: true })
+      setTimeout(() => { setNotification({ message: null, error: false }) }, 3000)
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBloglistAppUser')
     setUser(null)
@@ -94,7 +104,7 @@ const App = () => {
           <p><span>{`${user.name} logged in`} <button onClick={handleLogout}>logout</button></span></p>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} like={ handleLike } />
+            <Blog key={blog.id} blog={blog} user={user} like={ handleLike } remove={ handleRemove } />
           )}
         </div>
     }

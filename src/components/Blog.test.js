@@ -1,12 +1,15 @@
 /* eslint-disable no-undef */
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import Blog from './Blog'
 
 describe('Blog component', () => {
-  test('renders title and author, but not URL or likes by default', () => {
+
+  let component
+
+  beforeEach(() => {
     const blog = {
       id: 1,
       title: 'Test Blog',
@@ -23,18 +26,56 @@ describe('Blog component', () => {
       username: 'testuser',
     }
 
-    const component = render(<Blog blog={blog} user={user} like={() => ''} remove={() => ''} />)
+    const mockLikeHandler = jest.fn()
+    const mockRemoveHandler = jest.fn()
+
+    component = render(<Blog blog={blog} user={user} like={mockLikeHandler} remove={mockRemoveHandler} />)
+  })
+
+  test('renders title and author, but not URL or likes by default', () => {
+
     const div = component.container.querySelector('.blog-details')
 
-    // Check that title and author are rendered
     expect(screen.getByText('Test Blog Test Author')).toBeInTheDocument()
 
     expect(div).toHaveStyle('display: none')
-
-    // Check that URL and likes are not rendered by default
-    // expect(screen.queryByText('http://test.com')).toBeNull()
-    // expect(screen.queryByText('likes 10')).toBeNull()
   })
 
-  // Add more tests as needed
+  test('after clicking the view button, the blog details are visible', () => {
+    const button = component.getByText('view')
+    fireEvent.click(button)
+
+    const div = component.container.querySelector('.blog-details')
+    expect(div).toHaveStyle('display: block')
+  })
+
+  test('clicking the like button twice will call the handler function twice', () => {
+
+    const blog = {
+      id: 1,
+      title: 'Test Blog',
+      author: 'Test Author',
+      url: 'http://test.com',
+      likes: 10,
+      user: {
+        username: 'testuser',
+        name: 'Test User',
+      },
+    }
+
+    const user = {
+      username: 'testuser',
+    }
+
+    const mockLikeHandler = jest.fn()
+    const mockRemoveHandler = jest.fn()
+
+    component = render(<Blog blog={blog} user={user} like={mockLikeHandler} remove={mockRemoveHandler} />)
+
+    const button = component.container.querySelector('.like-button')
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    expect(mockLikeHandler.mock.calls).toHaveLength(2)
+  })
 })

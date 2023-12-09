@@ -45,7 +45,7 @@ const Blog = ({ blog, user, like, remove }) => {
     </p>
     <div className="blog-details" style={{ display: open ? 'block' : 'none' }}>
       <p className="blog-url" style={{ margin: '0px' }}>{blog.url}</p>
-      <p className="blog-likes" style={{ margin: '0px' }}>likes {blog.likes || 0} <button className="like-button" style={likeButtonStyle} onClick={() => like({ ...blog, likes: blog.likes + 1 })}>like</button></p>
+      <p className="blog-likes" style={{ margin: '0px' }}>likes <span id='likes-holder'>{blog.likes || 0}</span> <button className="like-button" style={likeButtonStyle} onClick={() => like({ ...blog, likes: blog.likes + 1 })}>like</button></p>
       <p className="blog-user" style={{ margin: '0px' }}>{blog.user ? blog.user.name : 'anonymous'}</p>
       {blog.user.username === user.username ? <button className="remove-button" style={removeButtonStyle} onClick={handleDelete}>remove</button>: null}
     </div>

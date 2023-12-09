@@ -1,13 +1,13 @@
 describe('Bloglist app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:3001/api/testing/reset')
+    cy.request('POST',  `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'Karel Rodríguez Varona',
       username: 'karel',
       password: '123456789'
     }
-    cy.request('POST', 'http://localhost:3001/api/users/', user)
-    cy.visit('http://localhost:5173')
+    cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -38,26 +38,39 @@ describe('Bloglist app', function() {
 
   describe('when logged in', function() {
     beforeEach(function() {
-      cy.contains('login').click()
-      cy.get('input:first').type('karel')
-      cy.get('input:last').type('123456789')
-      cy.get('#button-login').click()
+      cy.login({
+        username: 'karel', password: '123456789'
+      })
     })
 
-    // it('a new note can be created', function() {
-    //   cy.contains('new blog').click()
-    //   cy.get('#titleInput').type('a blog created by cypress')
-    //   cy.get('#authorInput').type('Fernando Pessoa')
-    //   cy.get('#urlInput').type('https://a.blog.by.cypress')
-    //   cy.contains('create').click()
-    //   cy.contains('a blog created by cypress')
-    // })
+    it('A blog can be created', function() {
+      cy.createBlog({
+        title: 'a blog created by cypress',
+        author: 'Fernando Pessoa',
+        url: 'https://a.blog.by.cypress',
+        likes: 0
+      })
+      cy.contains('a blog created by cypress')
+    })
 
-    // it('a blog can be liked', function () {
-    //   cy.contains('a blog created by cypress').parent().as('wrapper')
-    //   cy.get('@wrapper').contains('View').click()
-    //   cy.get('@wrapper').find('#like-button').click()
-    //   cy.get('@wrapper').find('#likes-holder').should('contain', '1')
-    // })
+    describe('when a blog is created', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'a blog created by cypress',
+          author: 'Fernando Pessoa',
+          url: 'https://a.blog.by.cypress',
+          likes: 0
+        })
+      })
+
+      it('it can be liked', function () {
+        cy.contains('a blog created by cypress').parent().as('wrapper')
+        cy.get('@wrapper').contains('view').click()
+        cy.get('@wrapper').find('.like-button').click()
+        cy.get('@wrapper').find('#likes-holder').should('contain', '1')
+      })
+
+    })
+
   })
 })
